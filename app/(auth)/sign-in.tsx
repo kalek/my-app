@@ -118,11 +118,25 @@ export default function SignInScreen() {
     if ((signIn as any).mfa?.verifyEmailCode) {
       result = await (signIn as any).mfa.verifyEmailCode({ code: code.trim() });
     } else if ((signIn as any).attemptSecondFactor) {
-      result = await (signIn as any).attemptSecondFactor({ strategy: 'email_code', code: code.trim() });
+      result = await (signIn as any).attemptSecondFactor({
+        strategy: 'email_code',
+        code: code.trim(),
+      });
     }
 
     if (result?.status === 'complete' || signIn.status === 'complete') {
       await finalizeAndGo();
+    }
+  };
+
+  const canResendEmailCode =
+    !!(signIn as any).mfa?.sendEmailCode || !!(signIn as any).prepareSecondFactor;
+
+  const handleResendEmailCode = async () => {
+    if ((signIn as any).mfa?.sendEmailCode) {
+      await (signIn as any).mfa.sendEmailCode();
+    } else if ((signIn as any).prepareSecondFactor) {
+      await (signIn as any).prepareSecondFactor({ strategy: 'email_code' });
     }
   };
 
@@ -199,9 +213,12 @@ export default function SignInScreen() {
                 </Pressable>
 
                 <Pressable
-                  className={cx('auth-secondary-button', busy && 'opacity-50')}
-                  onPress={() => signIn.mfa.sendEmailCode()}
-                  disabled={busy}
+                  className={cx(
+                    'auth-secondary-button',
+                    (busy || !canResendEmailCode) && 'opacity-50',
+                  )}
+                  onPress={handleResendEmailCode}
+                  disabled={busy || !canResendEmailCode}
                 >
                   <Text className="auth-secondary-button-text">Send a new code</Text>
                 </Pressable>
