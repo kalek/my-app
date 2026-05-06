@@ -291,7 +291,7 @@
   }
 
   .auth-input {
-    @apply border-border bg-background font-sans-medium text-primary rounded-2xl border px-4 py-4 text-base;
+    @apply border-border bg-background font-sans-medium text-primary rounded-2xl border px-4 py-4 text-base leading-6;
   }
 
   .auth-input-error {
