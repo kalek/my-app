@@ -114,13 +114,14 @@ export default function SignInScreen() {
     setTouched((t) => ({ ...t, code: true }));
     if (!code.trim()) return;
 
+    let result;
     if ((signIn as any).mfa?.verifyEmailCode) {
-      await (signIn as any).mfa.verifyEmailCode({ code: code.trim() });
+      result = await (signIn as any).mfa.verifyEmailCode({ code: code.trim() });
     } else if ((signIn as any).attemptSecondFactor) {
-      await (signIn as any).attemptSecondFactor({ strategy: 'email_code', code: code.trim() });
+      result = await (signIn as any).attemptSecondFactor({ strategy: 'email_code', code: code.trim() });
     }
 
-    if (signIn.status === 'complete') {
+    if (result?.status === 'complete' || signIn.status === 'complete') {
       await finalizeAndGo();
     }
   };
