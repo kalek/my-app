@@ -7,6 +7,31 @@ export const tabs: AppTab[] = [
   { name: 'settings', title: 'Settings', icon: icons.setting },
 ];
 
+export const SUBSCRIPTION_CATEGORIES = [
+  'Entertainment',
+  'AI Tools',
+  'Developer Tools',
+  'Design',
+  'Productivity',
+  'Cloud',
+  'Music',
+  'Other',
+] as const;
+
+export type SubscriptionCategory = (typeof SUBSCRIPTION_CATEGORIES)[number];
+
+/** Accent / card tint aligned with existing subscription colors in HOME_SUBSCRIPTIONS */
+export const CATEGORY_COLORS: Record<SubscriptionCategory, string> = {
+  Entertainment: '#f5c542',
+  'AI Tools': '#b8d4e3',
+  'Developer Tools': '#e8def8',
+  Design: '#b8e8d0',
+  Productivity: '#e8d5b7',
+  Cloud: '#8fd1bd',
+  Music: '#c4b5fd',
+  Other: '#d4d4d4',
+};
+
 export const HOME_USER = {
   name: 'Adrian | JS Mastery',
 };

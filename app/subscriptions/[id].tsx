@@ -1,7 +1,7 @@
 import { Link, useLocalSearchParams } from 'expo-router';
+import { usePostHog } from 'posthog-react-native';
 import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import { usePostHog } from 'posthog-react-native';
 
 const SubscriptionDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();

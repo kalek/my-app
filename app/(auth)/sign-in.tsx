@@ -2,8 +2,8 @@ import { useSignIn } from '@clerk/expo';
 import cx from 'clsx';
 import { Link, useRouter } from 'expo-router';
 import { styled } from 'nativewind';
-import React from 'react';
 import { usePostHog } from 'posthog-react-native';
+import React from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
