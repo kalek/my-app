@@ -1,16 +1,17 @@
+import { TabScreen } from '@/components/TabScreen';
 import { useAuth, useUser } from '@clerk/expo';
-import { styled } from 'nativewind';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
-
-const SafeAreaView = styled(RNSafeAreaView);
+import { usePostHog } from 'posthog-react-native';
 
 const Settings = () => {
   const { signOut } = useAuth();
   const { isLoaded, user } = useUser();
+  const posthog = usePostHog();
 
   const handleLogout = async () => {
+    posthog.capture('user_signed_out');
+    posthog.reset();
     await signOut();
   };
 
@@ -23,7 +24,7 @@ const Settings = () => {
     user?.primaryEmailAddress?.emailAddress ?? user?.emailAddresses?.[0]?.emailAddress ?? '—';
 
   return (
-    <SafeAreaView className="bg-background flex-1 p-5">
+    <TabScreen>
       <View className="flex-1">
         <Text className="font-sans-bold text-primary text-2xl">Settings</Text>
 
@@ -74,7 +75,7 @@ const Settings = () => {
           </Pressable>
         </View>
       </View>
-    </SafeAreaView>
+    </TabScreen>
   );
 };
 

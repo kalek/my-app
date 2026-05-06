@@ -33,6 +33,8 @@ const TabLayout = () => {
     <Tabs
       screenOptions={{
         headerShown: false,
+        lazy: false,
+        animation: 'none',
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',

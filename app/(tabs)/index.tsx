@@ -1,28 +1,27 @@
 import ListHeading from '@/components/ListHeading';
 import SubscriptionCard from '@/components/SubscriptionCard';
+import { TabScreen } from '@/components/TabScreen';
 import UpcomingSubscriptionCard from '@/components/UpcomingSubscriptionCard';
 import { HOME_BALANCE, HOME_SUBSCRIPTIONS, UPCOMING_SUBSCRIPTIONS } from '@/constants/data';
 import { icons } from '@/constants/icons';
 import images from '@/constants/images';
 import { formatCurrency, formatSubscriptionDateTime } from '@/lib/utils';
 import { useUser } from '@clerk/expo';
-import { styled } from 'nativewind';
+import { usePostHog } from 'posthog-react-native';
 import { useState } from 'react';
 
 import { FlatList, Image, Text, View } from 'react-native';
-import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
-
-const SafeAreaView = styled(RNSafeAreaView);
 
 export default function App() {
   const { user } = useUser();
+  const posthog = usePostHog();
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null);
 
   const displayName =
     user?.firstName || user?.fullName || user?.emailAddresses[0]?.emailAddress || 'User';
 
   return (
-    <SafeAreaView className="bg-background flex-1 p-5">
+    <TabScreen>
       <FlatList
         ListHeaderComponent={() => (
           <>
@@ -70,9 +69,13 @@ export default function App() {
           <SubscriptionCard
             {...item}
             expanded={expandedSubscriptionId === item.id}
-            onPress={() =>
-              setExpandedSubscriptionId((currentId) => (currentId === item.id ? null : item.id))
-            }
+            onPress={() => {
+              const isExpanding = expandedSubscriptionId !== item.id;
+              setExpandedSubscriptionId((currentId) => (currentId === item.id ? null : item.id));
+              if (isExpanding) {
+                posthog.capture('subscription_expanded', { subscription_id: item.id });
+              }
+            }}
           />
         )}
         extraData={expandedSubscriptionId}
@@ -81,6 +84,6 @@ export default function App() {
         ListEmptyComponent={<Text className="home-empty-text">No subscriptions yet</Text>}
         contentContainerClassName="pb-20"
       />
-    </SafeAreaView>
+    </TabScreen>
   );
 }
