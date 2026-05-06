@@ -38,11 +38,31 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "assets/fonts/PlusJakartaSans-Regular.ttf",
+            "assets/fonts/PlusJakartaSans-Medium.ttf",
+            "assets/fonts/PlusJakartaSans-Bold.ttf",
+            "assets/fonts/PlusJakartaSans-SemiBold.ttf",
+            "assets/fonts/PlusJakartaSans-ExtraBold.ttf",
+            "assets/fonts/PlusJakartaSans-Light.ttf"
+          ]
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "306ed46e-69b0-49c6-9da6-5362685ba782"
+      }
+    },
+    "owner": "kalek"
   }
 }
