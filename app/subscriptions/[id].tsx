@@ -10,7 +10,7 @@ const SubscriptionDetails = () => {
       <Text>SubscriptionDetails: {id}</Text>
       <Link href="/">Go back</Link>
     </View>
-  )
-}
+  );
+};
 
-export default SubscriptionDetails
+export default SubscriptionDetails;
