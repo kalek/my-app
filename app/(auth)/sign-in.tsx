@@ -2,6 +2,7 @@ import { useSignIn } from '@clerk/expo';
 import cx from 'clsx';
 import { Link, useRouter } from 'expo-router';
 import { styled } from 'nativewind';
+import { usePostHog } from 'posthog-react-native';
 import React from 'react';
 import {
   KeyboardAvoidingView,
@@ -21,6 +22,7 @@ const emailLooksValid = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ema
 export default function SignInScreen() {
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
+  const posthog = usePostHog();
 
   const [emailAddress, setEmailAddress] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -61,6 +63,13 @@ export default function SignInScreen() {
         if (session?.currentTask) {
           return;
         }
+
+        const userId = session?.user?.id;
+        const email = session?.user?.primaryEmailAddress?.emailAddress;
+        if (userId) {
+          posthog.identify(userId, { $set: { email } });
+        }
+        posthog.capture('user_signed_in', { email });
 
         const url = decorateUrl('/(tabs)');
         if (Platform.OS === 'web' && url.startsWith('http')) {

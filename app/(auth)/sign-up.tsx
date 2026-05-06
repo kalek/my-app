@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Link, useRouter } from 'expo-router';
 import { styled } from 'nativewind';
 import React from 'react';
+import { usePostHog } from 'posthog-react-native';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -21,6 +22,7 @@ const emailLooksValid = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ema
 export default function SignUpScreen() {
   const { signUp, errors, fetchStatus } = useSignUp();
   const router = useRouter();
+  const posthog = usePostHog();
 
   const [emailAddress, setEmailAddress] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -91,6 +93,16 @@ export default function SignUpScreen() {
           if (session?.currentTask) {
             return;
           }
+
+          const userId = session?.user?.id;
+          const email = session?.user?.primaryEmailAddress?.emailAddress;
+          if (userId) {
+            posthog.identify(userId, {
+              $set: { email },
+              $set_once: { first_signup_date: new Date().toISOString() },
+            });
+          }
+          posthog.capture('user_signed_up', { email });
 
           const url = decorateUrl('/(tabs)');
           if (Platform.OS === 'web' && url.startsWith('http')) {
