@@ -75,7 +75,6 @@ export default function SignInScreen() {
   };
 
   const handleSubmit = async () => {
-    console.log('handleSubmit called');
     setTouched({ email: true, password: true, code: touched.code });
     if (!emailAddress.trim() || !emailLooksValid(emailAddress) || !password) return;
 
